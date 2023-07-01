@@ -234,12 +234,6 @@ sub {
 img {
     border: 0
     }
-/**
- * Correct overflow not hidden in IE 9/10/11.
- */
-svg:not(:root) {
-    overflow: hidden
-    }
 /* Grouping content
    ========================================================================== */
 /**
@@ -435,6 +429,19 @@ td, th {
     color: #eb5757 !important;
     /* Front red color. */
     }
+.notion-link-ai-version {
+    transition: 100ms ease-in
+    }
+.notion-link-ai-version:hover {
+    color: #ca59ff !important;
+    /* AI Version purple color. */
+    }
+.notion-ai-icon {
+    transition: 100ms ease-in
+    }
+.notion-ai-icon:hover {
+    filter: brightness(1.3)
+    }
 .notion-mobile-tapping {
     opacity: 0.6
     }
@@ -456,21 +463,17 @@ td, th {
 /* required to correctly highlight the icons within a page/external object
 mention token. */
 .notion-page-mention-token::selection, .notion-external-object-token::selection {
-    background: rgba(46, 170, 220, 0.2)
+    background: rgba(35, 131, 226, 0.14)
     }
 /* ==================================================================== */
 /* Focus Feedback */
 /* ==================================================================== */
-.notion-focusable {
-    transition: box-shadow 300ms
-    }
-/* NOTE: do not try to combine these next two rules, if you do, it will
-   break the blue focus ring on Safari */
 .notion-focusable-within:focus-within {
-    box-shadow: rgba(46, 170, 220, 0.7) 0 0 0 1px inset, rgba(46, 170, 220, 0.4) 0 0 0 2px !important
+    box-shadow: rgba(35, 131, 226, 0.57) 0 0 0 1px inset, rgba(35, 131, 226, 0.35) 0 0 0 2px !important
     }
-.notion-focusable:focus-visible {
-    box-shadow: rgba(46, 170, 220, 0.7) 0 0 0 1px inset, rgba(46, 170, 220, 0.4) 0 0 0 2px !important
+/* Focusable tokens inside the editor should show focus ring */
+.notion-focusable-token:focus-visible {
+    box-shadow: rgba(35, 131, 226, 0.57) 0 0 0 1px inset, rgba(35, 131, 226, 0.35) 0 0 0 2px !important
     }
 /* ==================================================================== */
 /* Cursor */
@@ -496,6 +499,11 @@ mention token. */
 /* ==================================================================== */
 /* Animation */
 /* ==================================================================== */
+/* TODO(pm-announcement): Remove after launch */
+.pm-announcement-modal-fadein {
+    animation: fadein ease-in 1s;
+    animation-fill-mode: both
+    }
 .notion-fadein {
     animation: fadein ease-in 330ms
     }
@@ -563,7 +571,7 @@ html.notion-front-page .notion-app-inner {
 /* ==================================================================== */
 /* Contenteditable placeholders.
 /* ==================================================================== */
-[contenteditable]:empty:after, .forcePlaceholder:after {
+[contenteditable]:empty:after {
     content: attr(placeholder)
     }
 /* ==================================================================== */
@@ -578,6 +586,29 @@ html.notion-front-page .notion-app-inner {
 /* ==================================================================== */
 .token.operator.operator {
     background: transparent
+    }
+/* ==================================================================== */
+/* Box.
+/* ==================================================================== */
+/* testid data attribute is the wrapper for the picker element
+	.be-app-element is the content element*/
+#box-app-container > div {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    height: 100vh;
+    width: 100vw;
+    z-index: 1000;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center
+    }
+#box-app-container .be-app-element {
+    width: calc(100% - 150px);
+    height: calc(100% - 150px);
+    background: white;
+    max-width: 1150px;
+    max-height: 620px
     }
 /* ==================================================================== */
 /* Loading Spinner.
@@ -612,24 +643,77 @@ html.notion-front-page .notion-app-inner {
         }
     }
 /* ==================================================================== */
+/* Loading Dots (For AI).
+/* ==================================================================== */
+.loading-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 16px;
+    height: 16px
+    }
+.loading-dot {
+    width: 4px;
+    height: 4px;
+    opacity: 0.4;
+    background-color: #a782c3;
+    border-radius: 100%;
+    animation-duration: 0.5s;
+    animation-name: dotdance;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: cubic-bezier(0.11, 0, 0.5, 0)
+    }
+.loading-dots .loading-dot:nth-child(1) {
+    animation-delay: 0.2s
+    }
+.loading-dots .loading-dot:nth-child(2) {
+    animation-delay: 0.4s
+    }
+.loading-dots .loading-dot:nth-child(3) {
+    animation-delay: 0.6s
+    }
+@keyframes dotdance {
+    0% {
+        transform: translateY(0);
+        opacity: 0.4;
+        } 100% {
+        transform: translateY(2px);
+        opacity: 0.9;
+        }
+    }
+/* ==================================================================== */
+/* Sync spinner.
+/* ==================================================================== */
+.sync-spinner {
+    -webkit-animation: rotate 2500ms linear infinite;
+    animation: rotate 2500ms linear infinite;
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
+    display: block;
+    pointer-events: none
+    }
+/* ==================================================================== */
 /* Sidebar loading skeleton shimmer
 /* ==================================================================== */
-.notion-sidebar-loading-skeleton-shimmer {
+.notion-shimmer {
     overflow: hidden;
-    position: relative
+    position: relative;
+    z-index: 0
     }
-.notion-sidebar-loading-skeleton-shimmer::before {
+.notion-shimmer::before {
     content: "";
     position: absolute;
     height: 100%;
     width: 100%;
     z-index: 1;
-    animation: shimmer 1s infinite
+    animation: 1s linear infinite shimmer
     }
-.notion-light-theme .notion-sidebar-loading-skeleton-shimmer::before {
+.notion-light-theme .notion-shimmer::before {
     background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%)
     }
-.notion-dark-theme .notion-sidebar-loading-skeleton-shimmer::before {
+.notion-dark-theme .notion-shimmer::before {
     background: linear-gradient(90deg, rgba(86, 86, 86, 0) 0%, rgba(86, 86, 86, 0.4) 50%, rgba(86, 86, 86, 0) 100%)
     }
 @keyframes shimmer {
@@ -638,6 +722,53 @@ html.notion-front-page .notion-app-inner {
         } 100% {
         transform: translateX(100%);
         }
+    }
+/* ==================================================================== */
+/* input range
+/* ==================================================================== */
+input[type="range"] {
+    /* Hide the default slider so we can customize */
+    -webkit-appearance: none;
+    background: transparent
+    }
+/* Webkit (Chrome, Safari, etc.) */
+input[type="range"]::-webkit-slider-thumb {
+    /* Hide the default slider thumb so we can customize */
+    -webkit-appearance: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -4px
+    }
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+    /* Hide the default slider thumb so we can customize */
+    -webkit-appearance: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -4px
+    }
+/* Webkit (Chrome, Safari, etc.) */
+input[type="range"]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 10px;
+    cursor: pointer
+    }
+/* Firefox */
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    border-radius: 10px;
+    cursor: pointer
     }
 /* ==================================================================== */
 /* Front pages.
@@ -727,6 +858,69 @@ input[type="number"].input-hide-arrows {
 /** Conditional style when a content-editable root is editable */
 /** Conditional style when an element is or is inside a focused contentEditable. */
 /** Conditional styles for :after when we are composing text */
+/* ==================================================================== */
+/* Layout components
+/* 
+/* See Layout.tsx
+/* ==================================================================== */
+/**
+ * The Notion grid
+ *
+ *  FULL         CONTENT                        CONTENT         FULL
+ *  ┌─           ┌─                                  ─┐           ─┐
+ *  │            │                                    │            │
+ *  │            │                                    │            │
+ *  │    1fr     │       var(--content-width)         │    1fr     │
+ *  │            │                                    │            │
+ *  │            │                                    │            │
+ *  └─           └─                                  ─┘           ─┘
+ *
+ */
+.layout {
+    display: grid
+    }
+/**
+ * Place content in the centered "content" area
+ */
+.layout-content {
+    grid-column: content
+    }
+/**
+ * Place content spanning the entire grid
+ */
+.layout-full {
+    grid-column: full
+    }
+/**
+ * Place content in the left margin
+ */
+.layout-margin-left {
+    grid-column: full-start/content-start
+    }
+/**
+ * Place content in the right margin
+ */
+.layout-margin-right {
+    grid-column: content-end/full-end
+    }
+/**
+ * A nested grid which can serve as a container for child layout components.
+ */
+.layout-nested-grid {
+    grid-column: full;
+    display: grid;
+    grid-template-columns: inherit
+    }
+/**
+ * A utility class which can make a layout component (usually a full-width one)
+ * scrollable.
+ */
+.layout-margin-scrollable {
+    overflow-x: scroll;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none
+    }
 /*!*************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./src/client/css/react-datetime.css ***!
   \*************************************************************************************/
@@ -933,7 +1127,20 @@ table > tr {
     }
 *::selection {
     /* Notion brand blue */
-    background: rgba(45, 170, 219, 0.3)
+    background: rgba(35, 131, 226, 0.28)
+    }
+/**
+ * Safari 16.4 applies the ::selection pseudo-element to selectable
+ * blocks that are part of the user's selection, which makes
+ * it look like the user is making both a block selection *and* a
+ * multi-text selection.  This ensures that the selectable blocks
+ * don't appear selected in this case.
+ *
+ * (Note that actual block selections will still appear normally, as
+ * that styling is done through a completely different code path.)
+ */
+.notion-selectable::selection {
+    background: transparent
     }
 #notion-app b {
     font-weight: 600
@@ -975,11 +1182,11 @@ table > tr {
 /* Onboarding animations */
 @keyframes pulsing-button-border {
     0% {
-        border-color: rgba(46, 170, 220, 1);
+        border-color: rgba(35, 131, 226, 1);
         } 50% {
-        border-color: rgba(46, 170, 220, 0);
+        border-color: rgba(35, 131, 226, 0);
         } 100% {
-        border-color: rgba(46, 170, 220, 1);
+        border-color: rgba(35, 131, 226, 1);
         }
     }
 @keyframes pulsing-button {
@@ -989,6 +1196,24 @@ table > tr {
         filter: brightness(1.15);
         } 100% {
         filter: brightness(1);
+        }
+    }
+@keyframes shake {
+    0% {
+        margin-left: 0rem;
+        } 25% {
+        margin-left: 0.2rem;
+        } 75% {
+        margin-left: -0.2rem;
+        } 100% {
+        margin-left: 0rem;
+        }
+    }
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        } 100% {
+        opacity: 1;
         }
     }
 /*!****************************************************************************!*\
@@ -1086,10 +1311,10 @@ table > tr {
 .notion-light-theme .token.namespace {
     opacity: 0.7
     }
-.notion-light-theme .token.property, .notion-light-theme .token.tag, .notion-light-theme .token.boolean, .notion-light-theme .token.number, .notion-light-theme .token.constant, .notion-light-theme .token.symbol, .notion-light-theme .token.deleted {
+.notion-light-theme .token.property, .notion-light-theme .token.tag, .notion-light-theme .token.boolean, .notion-light-theme .token.number, .notion-light-theme .token.constant, .notion-light-theme .token.symbol, .notion-light-theme .token.deleted, .notion-light-theme .token.deleted + .token.line {
     color: #905
     }
-.notion-light-theme .token.selector, .notion-light-theme .token.attr-name, .notion-light-theme .token.string, .notion-light-theme .token.char, .notion-light-theme .token.builtin, .notion-light-theme .token.inserted {
+.notion-light-theme .token.selector, .notion-light-theme .token.attr-name, .notion-light-theme .token.string, .notion-light-theme .token.char, .notion-light-theme .token.builtin, .notion-light-theme .token.inserted, .notion-light-theme .token.inserted + .token.line {
     color: #690
     }
 .notion-light-theme .token.operator, .notion-light-theme .token.entity, .notion-light-theme .token.url, .notion-light-theme .language-css .token.string, .notion-light-theme .style .token.string {
@@ -1177,7 +1402,7 @@ table > tr {
 .notion-dark-theme .token.property, .notion-dark-theme .token.tag, .notion-dark-theme .token.boolean, .notion-dark-theme .token.number, .notion-dark-theme .token.constant, .notion-dark-theme .token.symbol {
     color: hsl(350, 40%, 70%)
     }
-.notion-dark-theme .token.selector, .notion-dark-theme .token.attr-name, .notion-dark-theme .token.string, .notion-dark-theme .token.char, .notion-dark-theme .token.builtin, .notion-dark-theme .token.inserted {
+.notion-dark-theme .token.selector, .notion-dark-theme .token.attr-name, .notion-dark-theme .token.string, .notion-dark-theme .token.char, .notion-dark-theme .token.builtin, .notion-dark-theme .token.inserted, .notion-dark-theme .token.inserted + .token.line {
     color: hsl(75, 70%, 60%)
     }
 .notion-dark-theme .token.operator, .notion-dark-theme .token.entity, .notion-dark-theme .token.url, .notion-dark-theme .language-css .token.string, .notion-dark-theme .style .token.string, .notion-dark-theme .token.variable {
@@ -1198,8 +1423,19 @@ table > tr {
 .notion-dark-theme .token.entity {
     cursor: help
     }
-.notion-dark-theme .token.deleted {
+.notion-dark-theme .token.deleted, .notion-dark-theme .token.deleted + .token.line {
     color: red
+    }
+/*!**********************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/client/css/github-gist.css ***!
+  \**********************************************************************************/
+/* This css is to override github gist's default css that adds extra top and bottom padding when embedded in notion */
+.notion-gist-block .gist-data {
+    display: flex
+    }
+.notion-gist-block .gist, .notion-gist-block .gist-file, .notion-gist-block .gist-data div {
+    display: flex;
+    flex-direction: column
     }
 /*!********************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./src/client/css/react-pdf.css ***!
@@ -1213,297 +1449,4 @@ table > tr {
     left: 0 !important;
     transform: none !important;
     cursor: text
-    }
-/*!***********************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/react-day-picker/lib/style.css ***!
-  \***********************************************************************************************/
-/* DayPicker styles */
-.DayPicker {
-    display: inline-block;
-    font-size: 1rem
-    }
-.DayPicker-wrapper {
-    position: relative;
-    flex-direction: row;
-    padding-bottom: 1em;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none
-    }
-.DayPicker-Months {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center
-    }
-.DayPicker-Month {
-    display: table;
-    margin: 0 1em;
-    margin-top: 1em;
-    border-spacing: 0;
-    border-collapse: collapse;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none
-    }
-.DayPicker-NavButton {
-    position: absolute;
-    top: 1em;
-    right: 1.5em;
-    left: auto;
-    display: inline-block;
-    margin-top: 2px;
-    width: 1.25em;
-    height: 1.25em;
-    background-position: center;
-    background-size: 50%;
-    background-repeat: no-repeat;
-    color: #8B9898;
-    cursor: pointer
-    }
-.DayPicker-NavButton:hover {
-    opacity: 0.8
-    }
-.DayPicker-NavButton--prev {
-    margin-right: 1.5em;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAwCAYAAAB5R9gVAAAABGdBTUEAALGPC/xhBQAAAVVJREFUWAnN2G0KgjAYwPHpGfRkaZeqvgQaK+hY3SUHrk1YzNLay/OiEFp92I+/Mp2F2Mh2lLISWnflFjzH263RQjzMZ19wgs73ez0o1WmtW+dgA01VxrE3p6l2GLsnBy1VYQOtVSEH/atCCgqpQgKKqYIOiq2CBkqtggLKqQIKgqgCBjpJ2Y5CdJ+zrT9A7HHSTA1dxUdHgzCqJIEwq0SDsKsEg6iqBIEoq/wEcVRZBXFV+QJxV5mBtlDFB5VjYTaGZ2sf4R9PM7U9ZU+lLuaetPP/5Die3ToO1+u+MKtHs06qODB2zBnI/jBd4MPQm1VkY79Tb18gB+C62FdBFsZR6yeIo1YQiLJWMIiqVjQIu1YSCLNWFgijVjYIuhYYCKoWKAiiFgoopxYaKLUWOii2FgkophYp6F3r42W5A9s9OcgNvva8xQaysKXlFytoqdYmQH6tF3toSUo0INq9AAAAAElFTkSuQmCC")
-    }
-.DayPicker-NavButton--next {
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAwCAYAAAB5R9gVAAAABGdBTUEAALGPC/xhBQAAAXRJREFUWAnN119ugjAcwPHWzJ1gnmxzB/BBE0n24m4xfNkTaOL7wOtsl3AXMMb+Vjaa1BG00N8fSEibPpAP3xAKKs2yjzTPH9RAjhEo9WzPr/Vm8zgE0+gXATAxxuxtqeJ9t5tIwv5AtQAApsfT6TPdbp+kUBcgVwvO51KqVhMkXKsVJFXrOkigVhCIs1Y4iKlWZxB1rX4gwlpRIIpa8SDkWmggrFq4IIRaJKCYWnSgnrXIQV1r8YD+1Vrn+bReagysIFfLABRt31v8oBu1xEBttfRbltmfjgEcWh9snUS2kNdBK6WN1vrOWxObWsz+fjxevsxmB1GQDfINWiev83nhaoiB/CoOU438oPrhXS0WpQ9xc1ZQWxWHqUYe0I0qrKCQKjygDlXIQV2r0IF6ViEBxVTBBSFUQQNhVYkHIVeJAtkNsbQ7c1LtzP6FsObhb2rCKv7NBIGoq4SDmKoEgTirXAcJVGkFSVVpgoSrXICGUMUH/QBZNSUy5XWUhwAAAABJRU5ErkJggg==")
-    }
-.DayPicker-NavButton--interactionDisabled {
-    display: none
-    }
-.DayPicker-Caption {
-    display: table-caption;
-    margin-bottom: 0.5em;
-    padding: 0 0.5em;
-    text-align: left
-    }
-.DayPicker-Caption > div {
-    font-weight: 500;
-    font-size: 1.15em
-    }
-.DayPicker-Weekdays {
-    display: table-header-group;
-    margin-top: 1em
-    }
-.DayPicker-WeekdaysRow {
-    display: table-row
-    }
-.DayPicker-Weekday {
-    display: table-cell;
-    padding: 0.5em;
-    color: #8B9898;
-    text-align: center;
-    font-size: 0.875em
-    }
-.DayPicker-Weekday abbr[title] {
-    border-bottom: none;
-    text-decoration: none
-    }
-.DayPicker-Body {
-    display: table-row-group
-    }
-.DayPicker-Week {
-    display: table-row
-    }
-.DayPicker-Day {
-    display: table-cell;
-    padding: 0.5em;
-    border-radius: 50%;
-    vertical-align: middle;
-    text-align: center;
-    cursor: pointer
-    }
-.DayPicker-WeekNumber {
-    display: table-cell;
-    padding: 0.5em;
-    min-width: 1em;
-    border-right: 1px solid #EAECEC;
-    color: #8B9898;
-    vertical-align: middle;
-    text-align: right;
-    font-size: 0.75em;
-    cursor: pointer
-    }
-.DayPicker--interactionDisabled .DayPicker-Day {
-    cursor: default
-    }
-.DayPicker-Footer {
-    padding-top: 0.5em
-    }
-.DayPicker-TodayButton {
-    border: none;
-    background-color: transparent;
-    background-image: none;
-    box-shadow: none;
-    color: #4A90E2;
-    font-size: 0.875em;
-    cursor: pointer
-    }
-/* Default modifiers */
-.DayPicker-Day--today {
-    color: #D0021B;
-    font-weight: 700
-    }
-.DayPicker-Day--outside {
-    color: #8B9898;
-    cursor: default
-    }
-.DayPicker-Day--disabled {
-    color: #DCE0E0;
-    cursor: default;
-    /* background-color: #eff1f1; */
-    }
-/* Example modifiers */
-.DayPicker-Day--sunday {
-    background-color: #F7F8F8
-    }
-.DayPicker-Day--sunday:not(.DayPicker-Day--today) {
-    color: #DCE0E0
-    }
-.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
-    position: relative;
-    background-color: #4A90E2;
-    color: #F0F8FF
-    }
-.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):hover {
-    background-color: #51A0FA
-    }
-.DayPicker:not(.DayPicker--interactionDisabled) .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
-    background-color: #F0F8FF
-    }
-/* DayPickerInput */
-.DayPickerInput {
-    display: inline-block
-    }
-.DayPickerInput-OverlayWrapper {
-    position: relative
-    }
-.DayPickerInput-Overlay {
-    position: absolute;
-    left: 0;
-    z-index: 1;
-    background: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15)
-    }
-/*!***************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./src/client/css/react-day-picker.css ***!
-  \***************************************************************************************/
-/* =============================================================================
-
-	react-day-picker.css.
-	Prefix everything with #notion-app to increase the precedence of these rules
-	so they will always override the default CSS regardless of the order in which
-	they are concatenated.
-
-// ========================================================================== */
-/* =============================================================================
-	Desktop Styles.
-============================================================================= */
-#notion-app .DayPicker-Day {
-    border-radius: 3px
-    }
-#notion-app .DayPicker-Day.DayPicker-Day--range {
-    border-radius: 0
-    }
-#notion-app .DayPicker-Day.DayPicker-Day--range.DayPicker-Day--start {
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px
-    }
-#notion-app .DayPicker-Day.DayPicker-Day--range.DayPicker-Day--end {
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px
-    }
-#notion-app .DayPicker-Day.DayPicker-Day--range.DayPicker-Day--start.DayPicker-Day--end {
-    border-radius: 3px
-    }
-#notion-app .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside), #notion-app .DayPicker-Day--value:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
-    background: rgb(45, 170, 219);
-    /* Notion blue */
-    color: #fff
-    }
-#notion-app .DayPicker:not(.DayPicker--interactionDisabled) .DayPicker-Day--outside:hover, #notion-app .DayPicker:not(.DayPicker--interactionDisabled) .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--value):not(.DayPicker-Day--start):not(.DayPicker-Day--end):hover {
-    background-color: rgba(45, 156, 219, 0.2);
-    border-radius: 3px;
-    cursor: pointer
-    }
-#notion-app .DayPicker-Months {
-    font-size: 14px
-    }
-#notion-app .DayPicker-Day--today:not(.DayPicker-Day--selected):not(.DayPicker-Day--value):not(.DayPicker-Day--start):not(.DayPicker-Day--end) {
-    position: relative;
-    color: white;
-    z-index: 1
-    }
-#notion-app .DayPicker-Day--today {
-    color: inherit
-    }
-#notion-app .DayPicker-Day--today:not(.DayPicker-Day--selected):not(.DayPicker-Day--value):not(.DayPicker-Day--start):not(.DayPicker-Day--end)::after {
-    content: "";
-    display: block;
-    width: 26px;
-    height: 26px;
-    background: rgb(235, 87, 87);
-    border-radius: 100%;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    z-index: -1
-    }
-#notion-app .DayPicker-Caption > div {
-    font-size: 14px;
-    font-weight: 500
-    }
-#notion-app .DayPicker-Month {
-    margin: 0
-    }
-#notion-app .DayPicker-wrapper {
-    padding-bottom: 0
-    }
-#notion-app .DayPicker-Week, #notion-app .DayPicker-WeekdaysRow {
-    display: flex
-    }
-#notion-app .DayPicker-Weekdays {
-    display: block;
-    margin-top: 0
-    }
-#notion-app .DayPicker-Caption {
-    margin-bottom: 8px
-    }
-#notion-app .DayPicker-Weekday, #notion-app .DayPicker-Day {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 30px;
-    line-height: 1.2
-    }
-/* =============================================================================
-	Mobile Styles.
-============================================================================= */
-@media only screen and (max-width: 600px) {
-    #notion-app .DayPicker-Months, #notion-app .DayPicker-Caption > div {
-        font-size: 16px
-        }
-    #notion-app .DayPicker-Month, #notion-app .DayPicker {
-        width: 100%
-        }
-    #notion-app .DayPicker-Weekday, #notion-app .DayPicker-Day {
-        flex-grow: 1
-        }
-    #notion-app .DayPicker-Weekday, #notion-app .DayPicker-Day {
-        height: 44px
-        }
-    #notion-app .DayPicker-Caption {
-        padding-left: 4%;
-        margin-top: 4px
-        }
-    #notion-app .DayPicker-Day--today:not(.DayPicker-Day--selected):not(.DayPicker-Day--value):not(.DayPicker-Day--range)::after {
-        width: 32px;
-        height: 32px
-        }
     }
